@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @Table(name = "book")
 public class Book extends Auditable
-    {
+{
     @ApiModelProperty(name = "bookid",
             value = "Primary key for the book",
             required = true, example = "1")
@@ -24,6 +24,7 @@ public class Book extends Auditable
             value = "Book Title",
             required = true,
             example = "Java For Dummies")
+    @Column
     private String booktitle;
 
     @ApiModelProperty(name = "ISBN",
@@ -36,6 +37,12 @@ public class Book extends Auditable
             value = "Copyright Date",
             example = "2017")
     private int copy;
+
+    @OneToMany(mappedBy = "book",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    @JsonIgnoreProperties("book")
+    private List<Wrote> authorWrote = new ArrayList<>();
 
     @ManyToMany
     @JsonIgnoreProperties(value = "books")
@@ -97,4 +104,4 @@ public class Book extends Auditable
     public void setAuthors(List<Author> authors) {
         this.authors = authors;
     }
-    }
+}

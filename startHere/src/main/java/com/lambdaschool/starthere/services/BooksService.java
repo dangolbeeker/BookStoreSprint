@@ -10,7 +10,7 @@ public interface BooksService
 {
     List<Book> findAll(Pageable pageable);
 
-    Book updateBook( Book book, long id);
+    Book update( Book book, long id);
 
     void delete(long id);
 
