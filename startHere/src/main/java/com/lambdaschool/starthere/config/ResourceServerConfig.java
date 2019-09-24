@@ -1,6 +1,5 @@
 package com.lambdaschool.starthere.config;
 
-
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
@@ -19,35 +18,36 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter
     public void configure(ResourceServerSecurityConfigurer resources)
     {
         resources.resourceId(RESOURCE_ID)
-                .stateless(false);
+                 .stateless(false);
     }
 
     @Override
     public void configure(HttpSecurity http) throws Exception
     {
         // http.anonymous().disable();
-        http.authorizeRequests().antMatchers("/",
-                "/h2-console/**",
-                "/swagger-resources/**",
-                "/swagger-resources/configuration/ui",
-                "/swagger-resources/configuration/security",
-                "/swagger-resource/**",
-                "/swagger-ui.html",
-                "/v2/api-docs",
-                "/webjars/**",
-                "/createnewuser",
-                "/otherapis/**").permitAll()
-                .antMatchers("/users/**", "/books/**", "/authors/**", "/oauth/revoke-token").authenticated()
-                .antMatchers("/actuator/**", "/roles/**").hasAnyRole("ADMIN")
-                .and()
-                .exceptionHandling()
-                .accessDeniedHandler(new OAuth2AccessDeniedHandler());
+        http.authorizeRequests()
+            .antMatchers("/",
+                         "/h2-console/**",
+                         "/swagger-resources/**",
+                         "/swagger-resource/**",
+                         "/swagger-ui.html",
+                         "/v2/api-docs",
+                         "/webjars/**",
+                         "/createnewuser").permitAll()
+            .antMatchers("/users/***", "/oauth/revoke-token").authenticated()
+            //                .antMatchers("/books", "/authors").hasAnyRole("ADMIN", "USER", "DATA") - application data
+            //                .antMatchers("/data/**").hasAnyRole("ADMIN", "DATA")
+            // .antMatchers("/users/***").hasAnyRole("USER")
+            .antMatchers("/roles/**", "/actuator/**").hasAnyRole("ADMIN")
+            .and()
+            .exceptionHandling()
+            .accessDeniedHandler(new OAuth2AccessDeniedHandler());
 
         // http.requiresChannel().anyRequest().requiresSecure();
         http.csrf()
-                .disable();
+            .disable();
         http.headers()
-                .frameOptions()
-                .disable();
+            .frameOptions()
+            .disable();
     }
 }

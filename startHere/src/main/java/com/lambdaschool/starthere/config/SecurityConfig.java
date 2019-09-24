@@ -1,6 +1,5 @@
 package com.lambdaschool.starthere.config;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception
     {
         auth.userDetailsService(userDetailsService)
-                .passwordEncoder(encoder());
+            .passwordEncoder(encoder());
     }
 
     @Bean

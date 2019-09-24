@@ -1,7 +1,12 @@
 package com.lambdaschool.starthere.controllers;
 
+import com.lambdaschool.starthere.models.Author;
+import com.lambdaschool.starthere.models.Book;
 import com.lambdaschool.starthere.models.User;
 import com.lambdaschool.starthere.services.UserService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +35,13 @@ public class UserController
     private UserService userService;
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @ApiOperation(value = "returns all users", response = User.class, responseContainer = "List")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "All users returned", responseContainer ="List", response = User.class),
+            @ApiResponse(code = 404, message = "All users not found", responseContainer ="List", response = User.class),
+            @ApiResponse(code = 500, message = "Error retrieving users", responseContainer ="List", response =
+                    User.class)
+    })
     @GetMapping(value = "/users",
                 produces = {"application/json"})
     public ResponseEntity<?> listAllUsers(HttpServletRequest request)
@@ -43,6 +55,14 @@ public class UserController
 
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @ApiOperation(value = "returns user by id", response = User.class, responseContainer = "List")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Uusers returned by id", responseContainer ="List", response =
+                    User.class),
+            @ApiResponse(code = 404, message = "User not found", responseContainer ="List", response = User.class),
+            @ApiResponse(code = 500, message = "Error retrieving user", responseContainer ="List", response =
+                    User.class)
+    })
     @GetMapping(value = "/user/{userId}",
                 produces = {"application/json"})
     public ResponseEntity<?> getUserById(HttpServletRequest request,
@@ -58,6 +78,13 @@ public class UserController
 
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @ApiOperation(value = "returns user by username", response = User.class, responseContainer = "List")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Username returned", responseContainer ="List", response = User.class),
+            @ApiResponse(code = 404, message = "user not found", responseContainer ="List", response = User.class),
+            @ApiResponse(code = 500, message = "Error retrieving user", responseContainer ="List", response =
+                    User.class)
+    })
     @GetMapping(value = "/user/name/{userName}",
                 produces = {"application/json"})
     public ResponseEntity<?> getUserByName(HttpServletRequest request,
@@ -72,6 +99,13 @@ public class UserController
     }
 
 
+    @ApiOperation(value = "returns current user", response = User.class, responseContainer = "List")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Username returned", responseContainer ="List", response = User.class),
+            @ApiResponse(code = 404, message = "Username not found", responseContainer ="List", response = User.class),
+            @ApiResponse(code = 500, message = "Error retrieving username", responseContainer ="List", response =
+                    User.class)
+    })
     @GetMapping(value = "/getusername",
                 produces = {"application/json"})
     @ResponseBody
@@ -85,6 +119,14 @@ public class UserController
 
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @ApiOperation(value = "adds new user", response = User.class, responseContainer = "List")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "New user added", responseContainer ="List", response = User.class),
+            @ApiResponse(code = 404, message = "New user unable to be added", responseContainer ="List", response =
+                    User.class),
+            @ApiResponse(code = 500, message = "Error adding user", responseContainer ="List", response =
+                    User.class)
+    })
     @PostMapping(value = "/user",
                  consumes = {"application/json"},
                  produces = {"application/json"})
@@ -108,7 +150,14 @@ public class UserController
         return new ResponseEntity<>(null, responseHeaders, HttpStatus.CREATED);
     }
 
-
+    @ApiOperation(value = "updates a user", response = User.class, responseContainer = "List")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "User updated", responseContainer ="List", response = User.class),
+            @ApiResponse(code = 404, message = "User not found", responseContainer ="List", response =
+                    User.class),
+            @ApiResponse(code = 500, message = "Error updating user", responseContainer ="List", response =
+                    User.class)
+    })
     @PutMapping(value = "/user/{id}")
     public ResponseEntity<?> updateUser(HttpServletRequest request,
                                         @RequestBody
@@ -125,6 +174,14 @@ public class UserController
 
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @ApiOperation(value = "Deletes a user", response = User.class, responseContainer = "List")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "User deleted", responseContainer ="List", response = User.class),
+            @ApiResponse(code = 404, message = "User not found", responseContainer ="List", response =
+                    User.class),
+            @ApiResponse(code = 500, message = "Error deleting user", responseContainer ="List", response =
+                    User.class)
+    })
     @DeleteMapping("/user/{id}")
     public ResponseEntity<?> deleteUserById(HttpServletRequest request,
                                             @PathVariable
@@ -138,6 +195,14 @@ public class UserController
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @ApiOperation(value = "Deletes user roles by ID", response = User.class, responseContainer = "List")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "User roles deleted", responseContainer ="List", response = User.class),
+            @ApiResponse(code = 404, message = "User or roles not found", responseContainer ="List", response =
+                    User.class),
+            @ApiResponse(code = 500, message = "Error deleting user roles", responseContainer ="List", response =
+                    User.class)
+    })
     @DeleteMapping("/user/{userid}/role/{roleid}")
     public ResponseEntity<?> deleteUserRoleByIds(HttpServletRequest request,
                                                  @PathVariable

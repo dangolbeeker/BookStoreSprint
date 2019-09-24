@@ -63,11 +63,11 @@ public class UserControllerUnitTest
         User u1 = new User("admin", "ILuvM4th!", admins);
 
         u1.getUseremails()
-                .add(new Useremail(u1, "admin@email.local"));
+          .add(new Useremail(u1, "admin@email.local"));
         u1.getUseremails().get(0).setUseremailid(10);
 
         u1.getUseremails()
-                .add(new Useremail(u1, "admin@mymail.local"));
+          .add(new Useremail(u1, "admin@mymail.local"));
         u1.getUseremails().get(1).setUseremailid(11);
 
         u1.setUserid(101);
@@ -80,15 +80,15 @@ public class UserControllerUnitTest
         User u2 = new User("cinnamon", "1234567", datas);
 
         u2.getUseremails()
-                .add(new Useremail(u2, "cinnamon@mymail.local"));
+          .add(new Useremail(u2, "cinnamon@mymail.local"));
         u2.getUseremails().get(0).setUseremailid(20);
 
         u2.getUseremails()
-                .add(new Useremail(u2, "hops@mymail.local"));
+          .add(new Useremail(u2, "hops@mymail.local"));
         u2.getUseremails().get(1).setUseremailid(21);
 
         u2.getUseremails()
-                .add(new Useremail(u2, "bunny@email.local"));
+          .add(new Useremail(u2, "bunny@email.local"));
         u2.getUseremails().get(2).setUseremailid(22);
 
         u2.setUserid(102);
@@ -100,7 +100,7 @@ public class UserControllerUnitTest
         User u3 = new User("testingbarn", "ILuvM4th!", users);
 
         u3.getUseremails()
-                .add(new Useremail(u3, "barnbarn@email.local"));
+          .add(new Useremail(u3, "barnbarn@email.local"));
         u3.getUseremails().get(0).setUseremailid(30);
 
         u3.setUserid(103);
@@ -240,8 +240,8 @@ public class UserControllerUnitTest
         Mockito.when(userService.save(any(User.class))).thenReturn(u1);
 
         RequestBuilder rb = MockMvcRequestBuilders.post(apiUrl)
-                .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
-                .content(userString);
+                                                  .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
+                                                  .content(userString);
 
         mockMvc.perform(rb).andExpect(status().isCreated()).andDo(MockMvcResultHandlers.print());
     }
@@ -265,8 +265,8 @@ public class UserControllerUnitTest
         String userString = mapper.writeValueAsString(u1);
 
         RequestBuilder rb = MockMvcRequestBuilders.put(apiUrl, 100L)
-                .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
-                .content(userString);
+                                                  .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
+                                                  .content(userString);
 
         mockMvc.perform(rb).andExpect(status().is2xxSuccessful()).andDo(MockMvcResultHandlers.print());
     }
@@ -277,11 +277,11 @@ public class UserControllerUnitTest
         String apiUrl = "/users/user/{userid}";
 
         RequestBuilder rb = MockMvcRequestBuilders.delete(apiUrl, "3")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON);
+                                                  .contentType(MediaType.APPLICATION_JSON)
+                                                  .accept(MediaType.APPLICATION_JSON);
         mockMvc.perform(rb)
-                .andExpect(status().is2xxSuccessful())
-                .andDo(MockMvcResultHandlers.print());
+               .andExpect(status().is2xxSuccessful())
+               .andDo(MockMvcResultHandlers.print());
     }
 
     @Test
@@ -290,11 +290,11 @@ public class UserControllerUnitTest
         String apiUrl = "/users/user/{userid}/role/{roleid}";
 
         RequestBuilder rb = MockMvcRequestBuilders.delete(apiUrl, 3, 2)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON);
+                                                  .contentType(MediaType.APPLICATION_JSON)
+                                                  .accept(MediaType.APPLICATION_JSON);
         mockMvc.perform(rb)
-                .andExpect(status().is2xxSuccessful())
-                .andDo(MockMvcResultHandlers.print());
+               .andExpect(status().is2xxSuccessful())
+               .andDo(MockMvcResultHandlers.print());
     }
 
     // @PostMapping("/user/{userid}/role/{roleid}")

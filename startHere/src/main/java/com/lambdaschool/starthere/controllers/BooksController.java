@@ -1,127 +1,118 @@
 package com.lambdaschool.starthere.controllers;
 
+
 import com.lambdaschool.starthere.models.Book;
+
 import com.lambdaschool.starthere.models.ErrorDetail;
-import com.lambdaschool.starthere.services.BooksService;
+import com.lambdaschool.starthere.services.BookService;
 import io.swagger.annotations.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/books")
 public class BooksController
 {
-
-    private static final Logger logger = LoggerFactory.getLogger(BooksController.class);
-
     @Autowired
-    private BooksService booksService;
-    //--------------------------------------------------------------------------------------------------
-    ///GET ALL  /BOOKS
-    @ApiOperation(value = "Return all Books",
-            response = Book.class,
-            responseContainer = "List")
-    @ApiImplicitParams({@ApiImplicitParam(name = "page",
-            dataType = "integer",
-            paramType = "query",
-            value = "Results page you want to retrieve (0..N)"),
-            @ApiImplicitParam(name = "size",
-                    dataType = "integer",
-                    paramType = "query",
+    BookService bookService;
+
+    @ApiOperation(value = "returns all books", response = Book.class, responseContainer = "List")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+                    value = "Results page you want to retrieve (0..N)"),
+            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page."),
-            @ApiImplicitParam(name = "sort",
-                    allowMultiple = true,
-                    dataType = "string",
-                    paramType = "query",
-                    value = "Sorting criteria in the format: property(,asc|desc). "
-                            + "Default sort order is ascending. " + "Multiple sort criteria are supported.")})
-    @GetMapping(value ="/books", produces = {"application/json"})
-    public ResponseEntity<?> findAllBooks(HttpServletRequest request,
-                                          @PageableDefault(page = 0,
-                                                  size = 3)
-                                                  Pageable pageable) {
-        logger.info(request.getMethod().toUpperCase() + " " +
-                request.getRequestURI() + " accessed at warn level");
-        List<Book> myBooks = booksService.findAll(pageable);
+            @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
+                    value = "Sorting criteria in the format: property(,asc|desc). " +
+                            "Default sort order is ascending. " +
+                            "Multiple sort criteria are supported.")})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Books found", responseContainer ="List", response = Book.class),
+            @ApiResponse(code = 404, message = "Books not found", responseContainer ="List", response = Book.class),
+            @ApiResponse(code = 500, message = "Error retrieving authors", responseContainer ="List", response =
+                    Book.class)
+    })
+    @GetMapping(value = "/all",
+            produces = {"application/json"})
+    public ResponseEntity<?> listAllBooks(
+            @PageableDefault(page = 0,
+                    size = 3)
+                    Pageable pageable)
+    {
+        List<Book> myBooks = bookService.findAll(pageable);
         return new ResponseEntity<>(myBooks, HttpStatus.OK);
     }
-    //-----------------------------------------------------------------------------------
-    ////DELETE /DATA/BOOKS/{ID}
-
-    @ApiOperation(value="Deletes a Book Based on Id",
-            response = void.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200,
-                    message = "Book Successfully Deleted",
-                    response = void.class)
+            @ApiResponse(code = 200, message = "Book deleted", responseContainer ="List", response = Book.class),
+            @ApiResponse(code = 404, message = "Book not found", responseContainer ="List", response = Book.class),
+            @ApiResponse(code = 500, message = "You swine", responseContainer ="List", response =
+                    Book.class)
     })
-    @DeleteMapping("/books/{bookid}")
-    public ResponseEntity<?> deleteCourseById(
-            @ApiParam(value = "Books id",
-                    required = true,
-                    example = "1")
-            @PathVariable long bookid,
-            HttpServletRequest request)
+    @DeleteMapping("/delete/{bookid}")
+    public ResponseEntity<?> deleteBookById(
+            @PathVariable
+                    long bookid)
     {
-        logger.info(request.getMethod() + " " + request.getRequestURI() + " accessed");
-        booksService.delete(bookid);
+        bookService.delete(bookid);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    //--------------------------------------------------------------------------------------------
-//    PUT /data/books/{id} - updates a books info (Title, Copyright, ISBN)
-//    but does NOT have to assign authors to the books.
-    @ApiOperation(value = "Updates a books info but no assigned author",
-            notes = "updates a books info (Title, Copyright, ISBN)\n" +
-                    "but does NOT have to assign authors to the books.",
-            response = void.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200,
-                    message = "Successful",
-                    response = void.class)
+            @ApiResponse(code = 200, message = "Book found", responseContainer ="List", response = Book.class),
+            @ApiResponse(code = 404, message = "Book not found", responseContainer ="List", response = Book.class),
+            @ApiResponse(code = 500, message = "You swine", responseContainer ="List", response =
+                    Book.class)
     })
-    @PutMapping(value = "/data/books/{id}")
+    @GetMapping(value = "/{bookid}",
+            produces = {"application/json"})
+    public ResponseEntity<?> getBookById(@ApiParam(value = "Book id", required = true, example = "1")
+                                               @PathVariable
+                                                       Long bookid)
+    {
+        Book b = bookService.findBookById(bookid);
+        return new ResponseEntity<>(b, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/new",
+            consumes = {"application/json"},
+            produces = {"application/json"})
+    public ResponseEntity<?> addNewBook(@Valid
+                                              @RequestBody
+                                                      Book newBook) throws URISyntaxException
+    {
+        newBook = bookService.save(newBook);
+
+        // set the location header for the newly created resource
+        HttpHeaders responseHeaders = new HttpHeaders();
+        URI newBookURI =
+                ServletUriComponentsBuilder.fromCurrentRequest().path("/{bookid}").buildAndExpand(newBook.getBookid()).toUri();
+        responseHeaders.setLocation(newBookURI);
+
+        return new ResponseEntity<>(null, responseHeaders, HttpStatus.CREATED);
+    }
+
+    @PutMapping(value = "/update/{bookid}")
     public ResponseEntity<?> updateBook(
-            @RequestBody Book updateBook,
-            @ApiParam(value = "Book id",
-                    required = true,
-                    example = "1")
-            @PathVariable long id, HttpServletRequest request)
+            @RequestBody
+                    Book updateBook,
+            @PathVariable
+                    long bookid)
     {
-        logger.info(request.getMethod() + " " + request.getRequestURI() + " accessed");
-        booksService.update(updateBook, id);
+        bookService.update(updateBook, bookid);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    ///-----------------------------------------------------------------------------------------------------
-    //    POST /data/books/{bookid}/authors/{authorid} - assigns a book already in the system (bookid)
-    //    to an author already in the system (authorid) (see how roles are handled for users
-    @ApiOperation(value = "Adds a book to an author",
-            response = void.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 201,
-                    message = "Book added Successfully",
-                    response = void.class),
-            @ApiResponse(code = 500,
-                    message = "Error adding Book",
-                    response = ErrorDetail.class)
-    })
-    @PostMapping(value = "/data/books/{bookid}/authors/{authorid}")
-    public ResponseEntity<?> addBookToAuthors(
-            @PathVariable long bookid,
-            @PathVariable long authorid
-    )
-    {
-        booksService.assignAuthor(bookid, authorid);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
+
+
 }

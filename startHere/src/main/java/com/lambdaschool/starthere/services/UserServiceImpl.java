@@ -1,6 +1,5 @@
 package com.lambdaschool.starthere.services;
 
-
 import com.lambdaschool.starthere.exceptions.ResourceFoundException;
 import com.lambdaschool.starthere.exceptions.ResourceNotFoundException;
 import com.lambdaschool.starthere.models.Role;
@@ -47,7 +46,7 @@ public class UserServiceImpl implements UserDetailsService, UserService
     public User findUserById(long id) throws ResourceNotFoundException
     {
         return userrepos.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User id " + id + " not found!"));
+                        .orElseThrow(() -> new ResourceNotFoundException("User id " + id + " not found!"));
     }
 
     @Override
@@ -55,8 +54,8 @@ public class UserServiceImpl implements UserDetailsService, UserService
     {
         List<User> list = new ArrayList<>();
         userrepos.findAll()
-                .iterator()
-                .forEachRemaining(list::add);
+                 .iterator()
+                 .forEachRemaining(list::add);
         return list;
     }
 
@@ -65,7 +64,7 @@ public class UserServiceImpl implements UserDetailsService, UserService
     public void delete(long id)
     {
         userrepos.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User id " + id + " not found!"));
+                 .orElseThrow(() -> new ResourceNotFoundException("User id " + id + " not found!"));
         userrepos.deleteById(id);
     }
 
@@ -97,9 +96,9 @@ public class UserServiceImpl implements UserDetailsService, UserService
         for (UserRoles ur : user.getUserroles())
         {
             long id = ur.getRole()
-                    .getRoleid();
+                        .getRoleid();
             Role role = rolerepos.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Role id " + id + " not found!"));
+                                 .orElseThrow(() -> new ResourceNotFoundException("Role id " + id + " not found!"));
             newRoles.add(new UserRoles(newUser, ur.getRole()));
         }
         newUser.setUserroles(newRoles);
@@ -107,7 +106,7 @@ public class UserServiceImpl implements UserDetailsService, UserService
         for (Useremail ue : user.getUseremails())
         {
             newUser.getUseremails()
-                    .add(new Useremail(newUser, ue.getUseremail()));
+                   .add(new Useremail(newUser, ue.getUseremail()));
         }
 
         return userrepos.save(newUser);
@@ -119,7 +118,7 @@ public class UserServiceImpl implements UserDetailsService, UserService
     public User update(User user, long id, boolean isAdmin)
     {
         Authentication authentication = SecurityContextHolder.getContext()
-                .getAuthentication();
+                                                             .getAuthentication();
         User currentUser = userrepos.findByUsername(authentication.getName());
 
         if (id == currentUser.getUserid() || isAdmin)
@@ -146,7 +145,7 @@ public class UserServiceImpl implements UserDetailsService, UserService
                 for (Useremail ue : user.getUseremails())
                 {
                     currentUser.getUseremails()
-                            .add(new Useremail(currentUser, ue.getUseremail()));
+                               .add(new Useremail(currentUser, ue.getUseremail()));
                 }
             }
 
@@ -162,12 +161,12 @@ public class UserServiceImpl implements UserDetailsService, UserService
     public void deleteUserRole(long userid, long roleid)
     {
         userrepos.findById(userid)
-                .orElseThrow(() -> new ResourceNotFoundException("User id " + userid + " not found!"));
+                 .orElseThrow(() -> new ResourceNotFoundException("User id " + userid + " not found!"));
         rolerepos.findById(roleid)
-                .orElseThrow(() -> new ResourceNotFoundException("Role id " + roleid + " not found!"));
+                 .orElseThrow(() -> new ResourceNotFoundException("Role id " + roleid + " not found!"));
 
         if (rolerepos.checkUserRolesCombo(userid, roleid)
-                .getCount() > 0)
+                     .getCount() > 0)
         {
             rolerepos.deleteUserRoles(userid, roleid);
         } else
@@ -181,12 +180,12 @@ public class UserServiceImpl implements UserDetailsService, UserService
     public void addUserRole(long userid, long roleid)
     {
         userrepos.findById(userid)
-                .orElseThrow(() -> new ResourceNotFoundException("User id " + userid + " not found!"));
+                 .orElseThrow(() -> new ResourceNotFoundException("User id " + userid + " not found!"));
         rolerepos.findById(roleid)
-                .orElseThrow(() -> new ResourceNotFoundException("Role id " + roleid + " not found!"));
+                 .orElseThrow(() -> new ResourceNotFoundException("Role id " + roleid + " not found!"));
 
         if (rolerepos.checkUserRolesCombo(userid, roleid)
-                .getCount() <= 0)
+                     .getCount() <= 0)
         {
             rolerepos.insertUserRoles(userid, roleid);
         } else

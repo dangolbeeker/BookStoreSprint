@@ -76,11 +76,11 @@ public class DataSourceConfig
 
         logger.info("Database URL is " + myUrlString);
         return DataSourceBuilder.create()
-                .username(myDBUser)
-                .password(myDBPassword)
-                .url(myUrlString)
-                .driverClassName(myDriverClass)
-                .build();
+                                .username(myDBUser)
+                                .password(myDBPassword)
+                                .url(myUrlString)
+                                .driverClassName(myDriverClass)
+                                .build();
     }
 
     @Bean(name = "jdbcCustom")

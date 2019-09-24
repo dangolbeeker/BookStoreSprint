@@ -22,8 +22,8 @@ public class UseremailServiceImpl implements UseremailService
     {
         List<Useremail> list = new ArrayList<>();
         useremailrepos.findAll()
-                .iterator()
-                .forEachRemaining(list::add);
+                      .iterator()
+                      .forEachRemaining(list::add);
         return list;
     }
 
@@ -31,7 +31,7 @@ public class UseremailServiceImpl implements UseremailService
     public Useremail findUseremailById(long id)
     {
         return useremailrepos.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Useremail with id " + id + " Not Found!"));
+                             .orElseThrow(() -> new ResourceNotFoundException("Useremail with id " + id + " Not Found!"));
     }
 
     @Override
@@ -44,15 +44,15 @@ public class UseremailServiceImpl implements UseremailService
     public void delete(long id, boolean isAdmin)
     {
         if (useremailrepos.findById(id)
-                .isPresent())
+                          .isPresent())
         {
             Authentication authentication = SecurityContextHolder.getContext()
-                    .getAuthentication();
+                                                                 .getAuthentication();
             if (useremailrepos.findById(id)
-                    .get()
-                    .getUser()
-                    .getUsername()
-                    .equalsIgnoreCase(authentication.getName()) || isAdmin)
+                              .get()
+                              .getUser()
+                              .getUsername()
+                              .equalsIgnoreCase(authentication.getName()) || isAdmin)
             {
                 useremailrepos.deleteById(id);
             } else
@@ -69,11 +69,11 @@ public class UseremailServiceImpl implements UseremailService
     public Useremail save(Useremail useremail, boolean isAdmin)
     {
         Authentication authentication = SecurityContextHolder.getContext()
-                .getAuthentication();
+                                                             .getAuthentication();
 
         if (useremail.getUser()
-                .getUsername()
-                .equalsIgnoreCase(authentication.getName()) || isAdmin)
+                     .getUsername()
+                     .equalsIgnoreCase(authentication.getName()) || isAdmin)
         {
             return useremailrepos.save(useremail);
         } else

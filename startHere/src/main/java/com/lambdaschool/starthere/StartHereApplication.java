@@ -12,10 +12,10 @@ import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-@EnableSwagger2
 @EnableWebMvc
 @EnableJpaAuditing
 @SpringBootApplication
+@EnableSwagger2
 public class StartHereApplication
 {
     private static final Logger logger = LoggerFactory.getLogger(StartHereApplication.class);
@@ -35,8 +35,8 @@ public class StartHereApplication
 
     public static void main(String[] args)
     {
-        checkEnvironmentVariable("OAUTHCLIENTID");
-        checkEnvironmentVariable("OAUTHCLIENTSECRET");
+        checkEnvironmentVariable("LAMBDACLIENT");
+        checkEnvironmentVariable("LAMBDASECRET");
 
         if (!stop)
         {

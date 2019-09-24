@@ -1,20 +1,20 @@
 package com.lambdaschool.starthere.services;
 
-
+import com.lambdaschool.starthere.models.Author;
 import com.lambdaschool.starthere.models.Book;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-public interface BooksService
+public interface BookService
 {
     List<Book> findAll(Pageable pageable);
 
-    Book update( Book book, long id);
+    Book findBookById(long id);
 
     void delete(long id);
 
-    void assignAuthor(long bookid, long authorid);
+    Book save(Book book);
 
-    void save(Book book);
+    Book update(Book book, long id);
 }

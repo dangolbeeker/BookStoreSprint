@@ -8,100 +8,105 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@ApiModel(value = "Book", description = "The Book Model")
+@ApiModel(value = "book", description = "Book list")
 @Entity
 @Table(name = "book")
 public class Book extends Auditable
 {
-    @ApiModelProperty(name = "bookid",
-            value = "Primary key for the book",
-            required = true, example = "1")
+    @ApiModelProperty(name = "bookId", value = "Key for linking books and authors", required = true, example = "1")
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long bookid;
 
-    @ApiModelProperty(name = "booktitle",
-            value = "Book Title",
-            required = true,
-            example = "Java For Dummies")
-    @Column
-    private String booktitle;
-
-    @ApiModelProperty(name = "ISBN",
-            value = "The ISBN number of the book",
-            required = true,
-            example = "9797979797979797979")
+    @ApiModelProperty(name = "bookTitle", value = "Title of book", required = true, example = "Lord of the Rings")
+    @Column(nullable = false)
+    private String title;
+    @ApiModelProperty(name = "bookISBN", value = "Book's ISBN number", required = true, example = "8675309")
     private String ISBN;
-
-    @ApiModelProperty(name = "copy",
-            value = "Copyright Date",
-            example = "2017")
+    @ApiModelProperty(name = "bookCopy", value = "Year book was copyrighted", required = true, example = "1997")
+    @Column(nullable = true)
     private int copy;
 
-    @OneToMany(mappedBy = "book",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
+
+
+//    @ManyToMany
+//    @JoinTable(name = "wrote", joinColumns = {@JoinColumn(name = "bookid")}, inverseJoinColumns = {@JoinColumn(name = "authorid")})
+//    @JsonIgnoreProperties("book")
+//    private List<Author> authors = new ArrayList<>();
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "wrote", joinColumns = {@JoinColumn(name = "bookid")}, inverseJoinColumns = {@JoinColumn(name =
+            "authorid")})
     @JsonIgnoreProperties("book")
-    private List<Wrote> authorWrote = new ArrayList<>();
+    private List<Author> author = new ArrayList<>();
 
-    @ManyToMany
-    @JsonIgnoreProperties(value = "books")
-    @JoinTable(name = "author_book", joinColumns = {@JoinColumn(name = "bookid")},
-            inverseJoinColumns = {@JoinColumn(name = "authorid")})
-    private List<Author> authors = new ArrayList<>();
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "authorid",
+//            nullable = false)
+//    @JsonIgnoreProperties({"book", "hibernateLazyInitializer"})
+//    private Author authors;
+//
+//    @ManyToMany(mappedBy = "author")
+//    List<Author> author = new ArrayList<>();
 
-    ///default constructor
-    public Book() {
-
+    public Book()
+    {
     }
 
-    public Book(String booktitle, String ISBN, int copy) {
-        this.booktitle = booktitle;
+    public Book(String title, String ISBN, int copy)
+    {
+        this.title = title;
         this.ISBN = ISBN;
         this.copy = copy;
     }
 
-
-    //methods
-    //getters and setters
-
-    public long getBookid() {
+    public long getBookid()
+    {
         return bookid;
     }
 
-    public void setBookid(long bookid) {
+    public void setBookid(long bookid)
+    {
         this.bookid = bookid;
     }
 
-    public String getBooktitle() {
-        return booktitle;
+    public String getTitle()
+    {
+        return title;
     }
 
-    public void setBooktitle(String booktitle) {
-        this.booktitle = booktitle;
+    public void setTitle(String title)
+    {
+        this.title = title;
     }
 
-    public String getISBN() {
+    public String getISBN()
+    {
         return ISBN;
     }
 
-    public void setISBN(String ISBN) {
+    public void setISBN(String ISBN)
+    {
         this.ISBN = ISBN;
     }
 
-    public int getCopy() {
+    public int getCopy()
+    {
         return copy;
     }
 
-    public void setCopy(int copy) {
+    public void setCopy(int copy)
+    {
         this.copy = copy;
     }
 
-    public List<Author> getAuthors() {
-        return authors;
+    public List<Author> getAuthor()
+    {
+        return author;
     }
 
-    public void setAuthors(List<Author> authors) {
-        this.authors = authors;
+    public void setAuthor(List<Author> author)
+    {
+        this.author = author;
     }
 }
